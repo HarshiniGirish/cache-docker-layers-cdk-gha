@@ -40,17 +40,11 @@ jobs:
         aws-region: us-west-2
         role-to-assume: ${{ vars.OIDC_ROLE_ARN }}
         role-session-name: test-cache-layers
-
-    - name: Copy custom Docker command
-      run: |
-        cp .github/workflows/scripts/cdk_docker.sh /usr/local/bin/cdk_docker.sh
-        chmod +x /usr/local/bin/cdk_docker.sh
-      
-
-    - name: Set CDK_DOCKER environment variable
-      run: echo "CDK_DOCKER=/usr/local/bin/cdk_docker.sh" >> $GITHUB_ENV
       
     - name: Run CDK deploy
+      env:
+        DOCKER_BUILDKIT: 1
       run: |
+        echo $DOCKER_BUILDKIT
         npm install -g aws-cdk
         cdk deploy --all --require-approval never
